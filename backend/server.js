@@ -16,7 +16,16 @@ connectCloudinary()
 
 // middlewares
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+    origin: [
+        'http://localhost:3000',
+        'http://localhost:5173',
+        'http://localhost:5174',
+        'https://style-sphere-frontend-ashen.vercel.app',
+        'https://style-sphere-mu.vercel.app'
+    ],
+    credentials: true
+}))
 
 // api endpoints
 app.use('/api/user',userRouter)
