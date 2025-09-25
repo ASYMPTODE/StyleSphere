@@ -17,14 +17,27 @@ connectCloudinary()
 // middlewares
 app.use(express.json())
 app.use(cors({
-    origin: [
-        'http://localhost:3000',
-        'http://localhost:5173',
-        'http://localhost:5174',
-        'https://style-sphere-frontend-ashen.vercel.app',
-        'https://style-sphere-mu.vercel.app'
-    ],
-    credentials: true
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        const allowedOrigins = [
+            'http://localhost:3000',
+            'http://localhost:5173',
+            'http://localhost:5174',
+            'https://style-sphere-frontend-ashen.vercel.app',
+            'https://style-sphere-mu.vercel.app'
+        ];
+        
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        
+        return callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'token']
 }))
 
 // api endpoints
@@ -36,5 +49,16 @@ app.use('/api/order',orderRouter)
 app.get('/',(req,res)=>{
     res.send("API Working")
 })
+
+// Add error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ success: false, message: 'Something went wrong!' });
+});
+
+// Handle 404 errors
+app.use('*', (req, res) => {
+    res.status(404).json({ success: false, message: 'Route not found' });
+});
 
 app.listen(port, ()=> console.log('Server started on PORT : '+ port))

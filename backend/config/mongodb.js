@@ -6,7 +6,16 @@ const connectDB = async () => {
         console.log("DB Connected");
     })
 
-    await mongoose.connect(`${process.env.MONGODB_URI}/e-commerce`)
+    mongoose.connection.on('error',(err) => {
+        console.log("DB Connection Error:", err);
+    })
+
+    try {
+        await mongoose.connect(`${process.env.MONGODB_URI}`)
+        console.log("MongoDB connected successfully");
+    } catch (error) {
+        console.log("MongoDB connection failed:", error);
+    }
 
 }
 
