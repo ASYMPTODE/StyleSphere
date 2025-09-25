@@ -1,6 +1,7 @@
 import { v2 as cloudinary } from "cloudinary"
 import productModel from "../models/productModel.js"
 import orderModel from "../models/orderModel.js"
+import connectDB from "../config/mongodb.js"
 
 // function for add product
 const addProduct = async (req, res) => {
@@ -50,6 +51,8 @@ const addProduct = async (req, res) => {
 // function for list product
 const listProducts = async (req, res) => {
     try {
+        // Ensure database connection
+        await connectDB();
         
         const products = await productModel.find({});
         res.json({success:true,products})

@@ -12,19 +12,9 @@ import orderRouter from './routes/orderRoute.js'
 const app = express()
 const port = process.env.PORT || 4000
 
-// Initialize connections
-const initializeApp = async () => {
-    try {
-        await connectDB();
-        connectCloudinary();
-        console.log('All connections initialized successfully');
-    } catch (error) {
-        console.error('Failed to initialize connections:', error);
-    }
-};
-
-// Initialize immediately
-initializeApp();
+// Initialize connections - don't await here for serverless
+connectDB().catch(err => console.log('Initial DB connection failed:', err));
+connectCloudinary();
 
 // middlewares
 app.use(express.json())
@@ -51,17 +41,6 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'token']
 }))
-
-// Middleware to ensure MongoDB connection
-app.use('/api', async (req, res, next) => {
-    try {
-        await connectDB();
-        next();
-    } catch (error) {
-        console.error('Database connection failed:', error);
-        res.status(500).json({ success: false, message: 'Database connection failed' });
-    }
-});
 
 // api endpoints
 app.use('/api/user',userRouter)
