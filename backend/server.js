@@ -18,28 +18,27 @@ connectCloudinary();
 
 // middlewares
 app.use(express.json())
+
+// Add debug logging for CORS
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.path}`);
+    console.log('Origin:', req.headers.origin);
+    console.log('User-Agent:', req.headers['user-agent']);
+    next();
+});
+
 app.use(cors({
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-        
-        const allowedOrigins = [
-            'http://localhost:3000',
-            'http://localhost:5173',
-            'http://localhost:5174',
-            'https://style-sphere-frontend-ashen.vercel.app',
-            'https://style-sphere-mu.vercel.app'
-        ];
-        
-        if (allowedOrigins.includes(origin)) {
-            return callback(null, true);
-        }
-        
-        return callback(new Error('Not allowed by CORS'));
-    },
+    origin: [
+        'http://localhost:3000',
+        'http://localhost:5173',
+        'http://localhost:5174',
+        'https://style-sphere-frontend-ashen.vercel.app',
+        'https://style-sphere-mu.vercel.app'
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'token']
+    allowedHeaders: ['Content-Type', 'Authorization', 'token', 'Origin', 'X-Requested-With', 'Accept'],
+    optionsSuccessStatus: 200 // For legacy browser support
 }))
 
 // api endpoints
