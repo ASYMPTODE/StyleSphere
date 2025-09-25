@@ -9,7 +9,7 @@ import Login from './components/Login'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://style-sphere-backend-xi.vercel.app'
+export const backendUrl = (import.meta.env.VITE_BACKEND_URL || 'https://style-sphere-backend-xi.vercel.app').replace(/\/+$/, '')
 export const currency = '$'
 
 const App = () => {
