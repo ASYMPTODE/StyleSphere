@@ -8,6 +8,15 @@ import productRouter from './routes/productRoute.js'
 import cartRouter from './routes/cartRoute.js'
 import orderRouter from './routes/orderRoute.js'
 
+// Debug environment variables at startup
+console.log('=== Environment Check ===');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
+console.log('All env vars:', Object.keys(process.env).filter(key => 
+    key.includes('MONGO') || key.includes('CLOUD') || key.includes('JWT')
+));
+console.log('========================');
+
 // App Config
 const app = express()
 const port = process.env.PORT || 4000
