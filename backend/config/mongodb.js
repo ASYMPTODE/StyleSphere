@@ -11,7 +11,13 @@ const connectDB = async () => {
     })
 
     try {
-        await mongoose.connect(`${process.env.MONGODB_URI}`)
+        // Configure mongoose for better serverless compatibility
+        await mongoose.connect(`${process.env.MONGODB_URI}`, {
+            serverSelectionTimeoutMS: 10000, // 10 seconds
+            socketTimeoutMS: 45000, // 45 seconds
+            bufferCommands: false, // Disable mongoose buffering
+            bufferMaxEntries: 0 // Disable mongoose buffering
+        })
         console.log("MongoDB connected successfully");
     } catch (error) {
         console.log("MongoDB connection failed:", error);
